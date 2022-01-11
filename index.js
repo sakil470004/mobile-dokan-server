@@ -24,6 +24,11 @@ async function run() {
         const usersCollection = database.collection('users');
         const reviewsCollection = database.collection('reviews');
         const productsCollection = database.collection('products');
+
+
+
+
+        
         console.log('your mobile_dokan database running')
 
 
@@ -101,7 +106,7 @@ async function run() {
         })
 
         // PUT Api
-        // if user exist update user else insertUser
+        // if user exist update user else insertUser// this is only for the firebase work
         app.put('/users', async (req, res) => {
             const user = req.body;
             // console.log(user)
