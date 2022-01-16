@@ -105,6 +105,14 @@ async function run() {
             res.json(result)
         })
 
+        // 
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            // console.log(user)
+            const result = await usersCollection.insertOne(user);
+            res.json(result)
+        })
+
         // PUT Api
         // if user exist update user else insertUser// this is only for the firebase work
         app.put('/users', async (req, res) => {
