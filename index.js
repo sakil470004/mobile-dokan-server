@@ -28,7 +28,7 @@ async function run() {
 
 
 
-        
+
         console.log('your mobile_dokan database running')
 
 
@@ -64,7 +64,7 @@ async function run() {
         app.get('/userProducts', async (req, res) => {
             const email = req.query.email;
             const query = { email: email }
-            const cursor = cartsCollection.find(query);
+            const cursor = await cartsCollection.find(query);
             const products = await cursor.toArray();
             // console.log(query)
             res.json(products);
@@ -79,6 +79,24 @@ async function run() {
                 isAdmin = true;
             }
             res.json({ isAdmin: isAdmin })
+        })
+        // check the current filter phone here or not
+        app.get('/status/:type', async (req, res) => {
+            const type = req.params.type;
+            const cursor = await productsCollection.find({});
+            const allProduct = await cursor.toArray();
+
+            let filterModel = [];
+
+            allProduct.map(product => {
+                const found = product.status?.find(element => element.toLowerCase() === type.toLowerCase());
+                // console.log(found,product.status)
+                if(found){
+                    filterModel.push(product)
+                }
+            })
+            // console.log(filterModel)
+            res.json(filterModel)
         })
 
 
