@@ -91,7 +91,7 @@ async function run() {
             allProduct.map(product => {
                 const found = product.status?.find(element => element.toLowerCase() === type.toLowerCase());
                 // console.log(found,product.status)
-                if(found){
+                if (found) {
                     filterModel.push(product)
                 }
             })
@@ -163,6 +163,15 @@ async function run() {
             // res.json({message:'sakilhere'})
 
         })
+        // Delete Api
+        // delete one
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productsCollection.deleteOne(query);
+            res.json(result);
+        })
+
 
     } finally {
         // await client.close()
