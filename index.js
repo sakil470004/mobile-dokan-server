@@ -1,24 +1,29 @@
-const express = require('express')
-const app = express()
-const cors = require('cors');
-const { MongoClient } = require('mongodb');
-const ObjectId = require('mongodb').ObjectId;
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const express = require("express");
+const cors = require("cors");
+const app = express();
 require("dotenv").config();
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5000;
 
 // middleWare
-app.use(cors())
+app.use(cors());
 // for the access userData body data
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.poyqe.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
+// mongodb+srv://<username>:<password>@cluster0.poyqe.mongodb.net/?retryWrites=true&w=majority
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.poyqe.mongodb.net/?retryWrites=true&w=majority`;
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
 
 async function run() {
     try {
-        await client.connect()
+         client.connect()
         const database = client.db('mobile_dokan');
         const cartsCollection = database.collection('carts');
         const usersCollection = database.collection('users');
@@ -43,7 +48,7 @@ async function run() {
         // get single product
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) };
+            const query = { _id: new ObjectId(id) };
             const product = await productsCollection.findOne(query);
             res.json(product);
         })
@@ -156,7 +161,7 @@ async function run() {
         app.put('/carts/action', async (req, res) => {
             const user = req.body;
             // console.log(user)
-            const filter = { _id: ObjectId(user.id) };
+            const filter = { _id: new ObjectId(user.id) };
             const updateDoc = { $set: { action: user.action } };
             const result = await cartsCollection.updateOne(filter, updateDoc);
             res.json(result);
@@ -167,7 +172,7 @@ async function run() {
         // delete one
         app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) };
+            const query = { _id: new ObjectId(id) };
             const result = await productsCollection.deleteOne(query);
             res.json(result);
         })
